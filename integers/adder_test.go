@@ -6,10 +6,9 @@ import (
 )
 
 func ExampleAdd() {
-	sum:=Add(4,2)
+	sum := Add(4,2)
 	fmt.Println(sum)
 	// Output: 6
-
 }
 func TestAdd(t *testing.T) {
 
