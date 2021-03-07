@@ -11,14 +11,9 @@ func ExampleAdd() {
 	// Output: 6
 }
 func TestAdd(t *testing.T) {
-
-	t.Run("Add numbers", func(t *testing.T) {
-		sum := Add(2, 3)
-		expected := 5
-
-		if sum != expected {
-			t.Errorf("got %d instead of %d", sum, expected)
-		}
-
-	})
+	sum := Add(2, 3)
+	expected := 5
+	if sum != expected {
+		t.Errorf("got %d instead of %d", sum, expected)
+	}
 }
