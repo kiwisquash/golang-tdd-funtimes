@@ -19,9 +19,11 @@ func (w *Wallet) Deposit (amount CyberCurrency) {
 	w.balance += amount
 }
 
+var ErrInsufficientFunds = errors.New("cannot withdraw, insufficient funds")
+
 func (w *Wallet) Withdraw (amount CyberCurrency) error {
 	if amount > w.Balance() {
-		return errors.New(fmt.Sprintf("%d exceeds %d", amount, w.Balance()))
+		return ErrInsufficientFunds
 	}
 	w.balance -= amount
 	return nil
