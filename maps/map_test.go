@@ -7,31 +7,20 @@ func TestSearch(t *testing.T) {
 	dictionary := Dictionary{"hello": "world!"}
 
 	t.Run("in the dict", func(t *testing.T) {
-
 		got, err := dictionary.Search("hello")
 		want := "world!"
 
-		if err != nil {
-			t.Fatal("Shouldn't have an error.")
-		}
-
 		assertStrings(t, got, want, dictionary)
-
+		assertError(t, err, nil, dictionary)
 	})
 
 	t.Run("not in the dict", func(t *testing.T) {
-
-		_, err := dictionary.Search("bob")
+		got, err := dictionary.Search("bob")
 		want := ErrNotFound
 
-		if err == nil {
-			t.Fatal("Was expecting an error")  // fatal stops execution
-		}
-
+		assertStrings(t, got, "", dictionary)
 		assertError(t, err, want, dictionary)
 	})
-
-
 }
 
 func TestAdd(t *testing.T) {
@@ -45,7 +34,7 @@ func TestAdd(t *testing.T) {
 		err := dictionary.Add(word, definition)
 
 		assertError(t, err, nil, dictionary)
-		assertDefinition(t, dictionary, word, definition)
+		assertDefinition(t, word, definition, dictionary)
 	})
 
 	t.Run("add existing word", func (t *testing.T) {
@@ -57,8 +46,8 @@ func TestAdd(t *testing.T) {
 
 		err := dictionary.Add(word, "fish")
 
-		assertError(t, err, ErrWordAlreadyExists, dictionary)
-		assertDefinition(t, dictionary, word, definition)
+		assertError(t, err, ErrWordExists, dictionary)
+		assertDefinition(t, word, definition, dictionary)
 	})
 }
 
@@ -75,7 +64,7 @@ func TestUpdate(t *testing.T) {
 		err := dictionary.Update(word, newDefinition)
 
 		assertError(t, err, nil, dictionary)
-		assertDefinition(t, dictionary, word, newDefinition)
+		assertDefinition(t, word, newDefinition, dictionary)
 	})
 
 	t.Run("word doesn't exist", func(t *testing.T) {
@@ -99,13 +88,15 @@ func TestDelete (t *testing.T) {
 	assertError(t, err, ErrNotFound, dictionary)
 }
 
-func assertDefinition(t testing.TB, dictionary Dictionary, word, definition string) {
+func assertDefinition(t testing.TB, word, definition string, dictionary Dictionary) {
+
+	t.Helper()
 	
 	want := definition
 	got, error := dictionary.Search(word)
 
 	if error != nil {
-		t.Errorf("Shouldn't have an error.")
+		t.Fatal("Shouldn't have an error.")
 	}
 
 	if got != want {
